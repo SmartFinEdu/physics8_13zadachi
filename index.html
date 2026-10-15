@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Урок 5: Розв'язування задач з фізики (8 клас)</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Roboto+Mono:wght@500;700&display=swap" rel="stylesheet">
+    
+    <!-- MathJax 3 configuration & script for physics symbol rendering -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            },
+            options: {
+                ignoreHtmlClass: 'tex2jax_ignore',
+                processHtmlClass: 'tex2jax_process'
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            color: #0f172a;
+        }
+        .font-mono {
+            font-family: 'Roboto Mono', monospace;
+        }
+        .physics-board {
+            background: #ffffff;
+            border: 2px solid #e2e8f0;
+            box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.05);
+        }
+        .btn-action {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .btn-action:hover {
+            transform: translateY(-2px);
+        }
+        .btn-action:active {
+            transform: translateY(0);
+        }
+        .option-btn {
+            transition: all 0.2s ease;
+        }
+        .option-btn:hover {
+            border-color: #3b82f6;
+            background-color: #eff6ff;
+        }
+        /* Custom scrollbars */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        .mjx-chtml {
+            font-size: 105% !important;
+            color: inherit !important;
+        }
+    </style>
+</head>
+<body class="h-screen flex flex-col justify-between overflow-hidden bg-slate-50 text-slate-900 select-none">
+
+    <header class="bg-white border-b-2 border-slate-200 px-6 py-3 flex items-center justify-between shrink-0 shadow-xs z-10">
+        <div class="flex items-center gap-4">
+            <div class="border-2 border-slate-900 px-3 py-1 rounded-lg bg-slate-100 flex flex-col items-center justify-center">
+                <span class="text-xs font-black text-slate-600 uppercase tracking-wider">УРОК</span>
+                <span class="text-2xl font-black text-slate-900 leading-none">5</span>
+            </div>
+            <div>
+                <h1 class="text-2xl md:text-3xl font-black text-slate-900 tracking-tight">Розв'язування задач</h1>
+                <p class="text-sm text-slate-500 font-bold">Фізика 8 клас • Теплові явища та тепловий баланс</p>
+            </div>
+        </div>
+
+        <!-- Navigation Tabs (5 slides) -->
+        <nav class="hidden xl:flex items-center gap-1 bg-slate-100 p-1.5 rounded-xl border border-slate-200 text-base font-bold">
+            <button onclick="goToSlide(0)" id="tab-0" class="px-4 py-2 rounded-lg transition-all text-blue-700 bg-white shadow-xs font-black">1. Мета</button>
+            <button onclick="goToSlide(1)" id="tab-1" class="px-4 py-2 rounded-lg transition-all text-slate-600 hover:text-slate-900">2. Опитування</button>
+            <button onclick="goToSlide(2)" id="tab-2" class="px-4 py-2 rounded-lg transition-all text-slate-600 hover:text-slate-900">3. Тести (4.1-4.6)</button>
+            <button onclick="goToSlide(3)" id="tab-3" class="px-4 py-2 rounded-lg transition-all text-slate-600 hover:text-slate-900">4. Задачі (5.1-5.4)</button>
+            <button onclick="goToSlide(4)" id="tab-4" class="px-4 py-2 rounded-lg transition-all text-slate-600 hover:text-slate-900">5. Задачі (5.5-5.7*)</button>
+        </nav>
+
+        <div class="flex items-center gap-3">
+            <span class="text-sm bg-slate-100 text-slate-800 font-black px-4 py-2 rounded-xl border border-slate-300 font-mono" id="slide-indicator">1 / 5</span>
+            <button onclick="toggleFullscreen()" class="p-2.5 text-slate-600 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 rounded-xl transition border border-slate-300" title="Повний екран">
+                <i class="fas fa-expand text-xl"></i>
+            </button>
+        </div>
+    </header>
+
+    <main class="grow relative overflow-y-auto p-4 md:p-6 flex flex-col justify-center max-w-7xl mx-auto w-full">
+
+        <!-- Slide 0: Intro & Goals -->
+        <section id="slide-0" class="slide-content space-y-5">
+            <div class="physics-board rounded-3xl p-6 md:p-8 space-y-6">
+                <div class="flex items-center gap-4 border-b-2 border-slate-100 pb-4">
+                    <div class="w-14 h-14 rounded-2xl bg-blue-100 text-blue-600 flex items-center justify-center text-3xl font-black shrink-0">
+                        <i class="fa-solid fa-atom"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-3xl font-black text-slate-900">Етапи та мета уроку</h2>
+                        <p class="text-slate-500 font-bold text-base">Організаційний момент та налаштування на активну роботу</p>
+                    </div>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-6 text-lg">
+                    <div class="bg-slate-50 p-6 rounded-2xl border-2 border-slate-200 space-y-3">
+                        <h3 class="font-black text-slate-900 text-xl flex items-center gap-2">
+                            <i class="fa-solid fa-list-check text-blue-600"></i> План уроку:
+                        </h3>
+                        <ol class="list-decimal list-inside space-y-2 text-slate-800 font-medium text-lg">
+                            <li><strong>Налаштуйся</strong> на активну роботу на уроці.</li>
+                            <li><strong>Попрацюй у парі.</strong> Дайте відповіді на теоретичні запитання.</li>
+                            <li><strong>Виконай тести 4.1 – 4.6</strong> із детальним графічним аналізом.</li>
+                            <li><strong>Розв'яжи розрахункові задачі 5.1 – 5.7*</strong> різного рівня складності.</li>
+                        </ol>
+                    </div>
+
+                    <div class="bg-blue-50/70 p-6 rounded-2xl border-2 border-blue-200 space-y-3">
+                        <h3 class="font-black text-blue-900 text-xl flex items-center gap-2">
+                            <i class="fa-solid fa-bullseye text-blue-600"></i> Навчальна мета:
+                        </h3>
+                        <ul class="list-disc list-inside space-y-2 text-blue-950 font-medium text-lg">
+                            <li>Закріпити знання про кількість теплоти та питому теплоємність.</li>
+                            <li>Формувати вміння використовувати рівняння теплового балансу.</li>
+                            <li>Удосконалити навички аналізу графіків залежностей $Q(\Delta t)$ та $t(Q)$.</li>
+                            <li>Розвивати фізичне мислення під час обчислень ККД, потужності та молекулярної енергії.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="p-4 bg-emerald-50 border-2 border-emerald-200 rounded-2xl flex items-center justify-between gap-4">
+                    <div class="flex items-center gap-4">
+                        <i class="fa-solid fa-chalkboard-user text-emerald-600 text-3xl shrink-0"></i>
+                        <div>
+                            <p class="font-black text-emerald-950 text-lg">Вказівка для роботи:</p>
+                            <p class="text-base text-emerald-800 font-medium">Спочатку зробіть розрахунок або виберіть відповідь у зошиті, а потім натискайте на варіанти або кнопки підказки для самоперевірки!</p>
+                        </div>
+                    </div>
+                    <button onclick="goToSlide(1)" class="btn-action bg-blue-600 hover:bg-blue-700 text-white font-black px-6 py-3 rounded-xl text-lg shadow-md flex items-center gap-2 shrink-0">
+                        <span>Розпочати</span> <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 1: Questions -->
+        <section id="slide-1" class="slide-content hidden space-y-4">
+            <div class="physics-board rounded-3xl p-6 space-y-4">
+                <div class="flex items-center justify-between border-b-2 border-slate-100 pb-3">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center text-2xl font-black">
+                            <i class="fa-solid fa-comments"></i>
+                        </div>
+                        <h2 class="text-2xl font-black text-slate-900">2. Попрацюй у парі. Дайте відповіді на запитання</h2>
+                    </div>
+                    <span class="text-sm font-bold text-purple-900 bg-purple-100 px-4 py-1.5 rounded-full border border-purple-200">Уважно послухайте й доповніть відповіді одне одного</span>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-4 text-base">
+                    <!-- Q1 -->
+                    <div class="bg-slate-50 p-4 rounded-2xl border-2 border-slate-200 flex flex-col justify-between hover:border-blue-300 transition">
+                        <div>
+                            <p class="text-slate-900 font-extrabold text-lg mb-2"><i class="fa-solid fa-circle-question text-blue-600 mr-2"></i> Що називають кількістю теплоти?</p>
+                        </div>
+                        <div id="q1-ans" class="hidden mt-3 p-3 bg-emerald-50 rounded-xl text-emerald-950 text-base font-medium border border-emerald-300">
+                            <strong>Відповідь:</strong> Кількість теплоти — це фізична величина, що дорівнює енергії, яку тіло одержує або втрачає в процесі теплопередачі.
+                        </div>
+                        <button onclick="toggleAnswer('q1-ans')" class="mt-3 text-sm bg-white hover:bg-slate-100 text-slate-800 py-2 rounded-xl font-bold border border-slate-300 shadow-xs transition flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-eye text-blue-600"></i> Показати відповідь
+                        </button>
+                    </div>
+
+                    <!-- Q2 -->
+                    <div class="bg-slate-50 p-4 rounded-2xl border-2 border-slate-200 flex flex-col justify-between hover:border-blue-300 transition">
+                        <div>
+                            <p class="text-slate-900 font-extrabold text-lg mb-2"><i class="fa-solid fa-circle-question text-blue-600 mr-2"></i> Від чого залежить кількість теплоти під час нагрівання?</p>
+                        </div>
+                        <div id="q2-ans" class="hidden mt-3 p-3 bg-emerald-50 rounded-xl text-emerald-950 text-base font-medium border border-emerald-300">
+                            <strong>Відповідь:</strong> Від: 1) роду речовини ($c$); 2) маси тіла ($m$); 3) зміни температури ($\Delta t = t_2 - t_1$).
+                        </div>
+                        <button onclick="toggleAnswer('q2-ans')" class="mt-3 text-xs md:text-sm bg-white hover:bg-slate-100 text-slate-800 py-2 rounded-xl font-bold border border-slate-300 shadow-xs transition flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-eye text-blue-600"></i> Показати відповідь
+                        </button>
+                    </div>
+
+                    <!-- Q3 -->
+                    <div class="bg-slate-50 p-4 rounded-2xl border-2 border-slate-200 flex flex-col justify-between hover:border-blue-300 transition">
+                        <div>
+                            <p class="text-slate-900 font-extrabold text-lg mb-2"><i class="fa-solid fa-circle-question text-blue-600 mr-2"></i> За якою формулою обчислюють кількість теплоти?</p>
+                        </div>
+                        <div id="q3-ans" class="hidden mt-3 p-3 bg-emerald-50 rounded-xl text-emerald-950 text-base font-medium border border-emerald-300">
+                            <strong>Формула:</strong> $Q = c \cdot m \cdot (t_2 - t_1)$ &nbsp; або &nbsp; $Q = c \cdot m \cdot \Delta t$
+                        </div>
+                        <button onclick="toggleAnswer('q3-ans')" class="mt-3 text-sm bg-white hover:bg-slate-100 text-slate-800 py-2 rounded-xl font-bold border border-slate-300 shadow-xs transition flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-eye text-blue-600"></i> Показати відповідь
+                        </button>
+                    </div>
+
+                    <!-- Q4 -->
+                    <div class="bg-slate-50 p-4 rounded-2xl border-2 border-slate-200 flex flex-col justify-between hover:border-blue-300 transition">
+                        <div>
+                            <p class="text-slate-900 font-extrabold text-lg mb-2"><i class="fa-solid fa-circle-question text-blue-600 mr-2"></i> Що називають питомою теплоємністю речовини?</p>
+                        </div>
+                        <div id="q4-ans" class="hidden mt-3 p-3 bg-emerald-50 rounded-xl text-emerald-950 text-base font-medium border border-emerald-300">
+                            <strong>Відповідь:</strong> Фізична величина, яка показує, яка кількість теплоти необхідна для нагрівання $1\text{ кг}$ цієї речовини на $1^\circ\text{C}$.
+                        </div>
+                        <button onclick="toggleAnswer('q4-ans')" class="mt-3 text-sm bg-white hover:bg-slate-100 text-slate-800 py-2 rounded-xl font-bold border border-slate-300 shadow-xs transition flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-eye text-blue-600"></i> Показати відповідь
+                        </button>
+                    </div>
+
+                    <!-- Q5 -->
+                    <div class="bg-slate-50 p-4 rounded-2xl border-2 border-slate-200 flex flex-col justify-between hover:border-blue-300 transition">
+                        <div>
+                            <p class="text-slate-900 font-extrabold text-lg mb-2"><i class="fa-solid fa-circle-question text-blue-600 mr-2"></i> Питома теплоємність заліза $460\,\frac{\text{Дж}}{\text{кг}\cdot^\circ\text{C}}$. Що це означає?</p>
+                        </div>
+                        <div id="q5-ans" class="hidden mt-3 p-3 bg-emerald-50 rounded-xl text-emerald-950 text-base font-medium border border-emerald-300">
+                            <strong>Відповідь:</strong> Для нагрівання $1\text{ кг}$ заліза на $1^\circ\text{C}$ потрібно передати залізу $460\text{ Дж}$ теплоти.
+                        </div>
+                        <button onclick="toggleAnswer('q5-ans')" class="mt-3 text-sm bg-white hover:bg-slate-100 text-slate-800 py-2 rounded-xl font-bold border border-slate-300 shadow-xs transition flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-eye text-blue-600"></i> Показати відповідь
+                        </button>
+                    </div>
+
+                    <!-- Q6 -->
+                    <div class="bg-slate-50 p-4 rounded-2xl border-2 border-slate-200 flex flex-col justify-between hover:border-blue-300 transition">
+                        <div>
+                            <p class="text-slate-900 font-extrabold text-lg mb-2"><i class="fa-solid fa-circle-question text-blue-600 mr-2"></i> Зміст рівняння теплового балансу?</p>
+                        </div>
+                        <div id="q6-ans" class="hidden mt-3 p-3 bg-emerald-50 rounded-xl text-emerald-950 text-base font-medium border border-emerald-300">
+                            <strong>Відповідь:</strong> В ізольованій системі тіл кількість теплоти, яку віддають більш нагріті тіла, дорівнює кількості теплоти, яку отримують менш нагріті тіла: $Q_{\text{відд}} = Q_{\text{отр}}$.
+                        </div>
+                        <button onclick="toggleAnswer('q6-ans')" class="mt-3 text-sm bg-white hover:bg-slate-100 text-slate-800 py-2 rounded-xl font-bold border border-slate-300 shadow-xs transition flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-eye text-blue-600"></i> Показати відповідь
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 2: Test Tasks 4.1 to 4.6 -->
+        <section id="slide-2" class="slide-content hidden space-y-4">
+            <div class="physics-board rounded-3xl p-6 space-y-4">
+                <div class="flex items-center justify-between border-b-2 border-slate-100 pb-3">
+                    <h2 class="text-2xl font-black text-slate-900">3. Виконай тестові завдання (4.1 – 4.6)</h2>
+                    <span class="text-sm font-bold text-emerald-800 bg-emerald-100 px-4 py-1.5 rounded-full border border-emerald-200">Оберіть варіант відповіді</span>
+                </div>
+
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
+
+                    <!-- Test 4.1 -->
+                    <div class="bg-slate-50 p-4 rounded-2xl border-2 border-slate-200 space-y-2 flex flex-col justify-between">
+                        <p class="font-extrabold text-slate-900 text-base">4.1. Навесні, щоб прискорити танення снігу, потрібно його...</p>
+                        <div class="grid grid-cols-1 gap-1.5 font-medium">
+                            <button onclick="checkMCQ(this, false, 't41', 'Сажа темна і краще поглинає сонячне випромінювання!')" class="option-btn text-left p-2.5 rounded-xl border border-slate-300 bg-white">А. посипати деревною тирсою</button>
+                            <button onclick="checkMCQ(this, false, 't41', 'Плівка створить парниковий ефект, але посипання сажею ефективніше.')" class="option-btn text-left p-2.5 rounded-xl border border-slate-300 bg-white">Б. прикрити поліетиленовою плівкою</button>
+                            <button onclick="checkMCQ(this, true, 't41', 'Правильно! Чорний колір сажі поглинає сонячне проміння.')" class="option-btn text-left p-2.5 rounded-xl border border-slate-300 bg-white">В. посипати сажею</button>
+                            <button onclick="checkMCQ(this, false, 't41', 'Скло прозоре і не так ефективне.')" class="option-btn text-left p-2.5 rounded-xl border border-slate-300 bg-white">Г. прикрити склом</button>
+                        </div>
+                        <div id="t41-feedback" class="hidden p-2 rounded-xl text-xs font-bold"></div>
+                    </div>
+
+                    <!-- Test 4.2 -->
+                    <div class="bg-slate-50 p-4 rounded-2xl border-2 border-slate-200 space-y-2 flex flex-col justify-between">
+                        <p class="font-extrabold text-slate-900 text-base">4.2. Який із матеріалів є найкращим теплоізолятором?</p>
+                        <div class="grid grid-cols-1 gap-1.5 font-medium">
+                            <button onclick="checkMCQ(this, false, 't42', 'Метали — хороші провідники тепла.')" class="option-btn text-left p-2.5 rounded-xl border border-slate-300 bg-white">А. Залізні ошурки</button>
+                            <button onclick="checkMCQ(this, false, 't42', 'Залізо добре проводить тепло.')" class="option-btn text-left p-2.5 rounded-xl border border-slate-300 bg-white">Б. суцільний шматок заліза</button>
+                            <button onclick="checkMCQ(this, true, 't42', 'Правильно! Пориста структура з повітрям у тирсі — чудовий теплоізолятор.')" class="option-btn text-left p-2.5 rounded-xl border border-slate-300 bg-white">В. суха деревна тирса</button>
+                            <button onclick="checkMCQ(this, false, 't42', 'Суцільна деревина проводить тепло краще, ніж тирса з прошарками повітря.')" class="option-btn text-left p-2.5 rounded-xl border border-slate-300 bg-white">Г. суцільний шматок сухої деревини</button>
+                        </div>
+                        <div id="t42-feedback" class="hidden p-2 rounded-xl text-xs font-bold"></div>
+                    </div>
+
+                    <!-- Test 4.3 -->
+                    <div class="bg-slate-50 p-4 rounded-2xl border-2 border-slate-200 space-y-2 flex flex-col justify-between">
+                        <p class="font-extrabold text-slate-900 text-base">4.3. Одиниця питомої теплоємності речовини через основні одиниці СІ:</p>
+                        <div class="grid grid-cols-2 gap-1.5 font-mono font-bold">
+                            <button onclick="checkMCQ(this, false, 't43', 'Помилка у степені секунди.')" class="option-btn text-center p-2.5 rounded-xl border border-slate-300 bg-white">А. $\frac{\text{м}^2}{\text{с} \cdot ^\circ\text{C}}$</button>
+                            <button onclick="checkMCQ(this, true, 't43', 'Вірно! Оскільки 1 Дж = 1 кг·м²/с², то Дж/(кг·°C) = м²/(с²·°C).')" class="option-btn text-center p-2.5 rounded-xl border border-slate-300 bg-white">Б. $\frac{\text{м}^2}{\text{с}^2 \cdot ^\circ\text{C}}$</button>
+                            <button onclick="checkMCQ(this, false, 't43', 'Помилка у степені метра.')" class="option-btn text-center p-2.5 rounded-xl border border-slate-300 bg-white">В. $\frac{\text{м}}{\text{с}^2 \cdot ^\circ\text{C}}$</button>
+                            <button onclick="checkMCQ(this, false, 't43', 'Неправильні степені.')" class="option-btn text-center p-2.5 rounded-xl border border-slate-300 bg-white">Г. $\frac{\text{м}}{\text{с} \cdot ^\circ\text{C}}$</button>
+                        </div>
+                        <div id="t43-feedback" class="hidden p-2 rounded-xl text-xs font-bold font-sans"></div>
+                    </div>
+
+                    <!-- Test 4.4 -->
+                    <div class="bg-slate-50 p-4 rounded-2xl border-2 border-slate-200 space-y-2 flex flex-col justify-between">
+                        <p class="font-extrabold text-slate-900 text-sm">4.4. За графіком $t(Q)$ для $m = 100\text{ г}$. Питома теплоємність дорівнює:</p>
+                        <div class="flex justify-center my-1">
+                            <svg class="w-36 h-20 bg-white p-1 rounded-lg border border-slate-300" viewBox="0 0 160 110">
+                                <line x1="25" y1="10" x2="25" y2="90" stroke="#0f172a" stroke-width="2"/>
+                                <line x1="25" y1="90" x2="150" y2="90" stroke="#0f172a" stroke-width="2"/>
+                                <text x="5" y="18" font-size="10" font-weight="bold" fill="#0f172a">t, °C</text>
+                                <text x="120" y="105" font-size="10" font-weight="bold" fill="#0f172a">Q, кДж</text>
+                                <line x1="25" y1="70" x2="135" y2="70" stroke="#cbd5e1" stroke-dasharray="2,2"/>
+                                <line x1="25" y1="40" x2="135" y2="40" stroke="#cbd5e1" stroke-dasharray="2,2"/>
+                                <text x="5" y="73" font-size="8" fill="#475569">100</text>
+                                <text x="5" y="43" font-size="8" fill="#475569">200</text>
+                                <line x1="60" y1="70" x2="120" y2="40" stroke="#2563eb" stroke-width="3"/>
+                            </svg>
+                        </div>
+                        <div class="grid grid-cols-2 gap-1.5 font-mono font-bold">
+                            <button onclick="checkMCQ(this, false, 't44', 'Невірно.')" class="option-btn text-center p-1.5 rounded-xl border border-slate-300 bg-white">А. $100\,\frac{\text{Дж}}{\text{кг}\cdot^\circ\text{C}}$</button>
+                            <button onclick="checkMCQ(this, true, 't44', 'Вірно! c = ΔQ / (m·Δt) = 2000 / (0.1·100) = 200 Дж/(кг·°C).')" class="option-btn text-center p-1.5 rounded-xl border border-slate-300 bg-white">Б. $200\,\frac{\text{Дж}}{\text{кг}\cdot^\circ\text{C}}$</button>
+                            <button onclick="checkMCQ(this, false, 't44', 'Невірно.')" class="option-btn text-center p-1.5 rounded-xl border border-slate-300 bg-white">В. $300\,\frac{\text{Дж}}{\text{кг}\cdot^\circ\text{C}}$</button>
+                            <button onclick="checkMCQ(this, false, 't44', 'Невірно.')" class="option-btn text-center p-1.5 rounded-xl border border-slate-300 bg-white">Г. $400\,\frac{\text{Дж}}{\text{кг}\cdot^\circ\text{C}}$</button>
+                        </div>
+                        <div id="t44-feedback" class="hidden p-2 rounded-xl text-xs font-bold font-sans"></div>
+                    </div>
+
+                    <!-- Test 4.5 -->
+                    <div class="bg-slate-50 p-4 rounded-2xl border-2 border-slate-200 space-y-2 flex flex-col justify-between">
+                        <div>
+                            <p class="font-extrabold text-slate-900 text-xs md:text-sm">4.5. Графік $Q(\Delta t)$ для 5 тіл з одного матеріалу. Яка точка відповідає тілу мінімальної маси?</p>
+                            <div class="flex justify-center my-1">
+                                <svg class="w-40 h-24 bg-white p-1 rounded-lg border border-slate-300" viewBox="0 0 180 120">
+                                    <line x1="25" y1="10" x2="25" y2="100" stroke="#0f172a" stroke-width="2"/>
+                                    <line x1="25" y1="100" x2="170" y2="100" stroke="#0f172a" stroke-width="2"/>
+                                    <text x="5" y="18" font-size="10" font-weight="bold" fill="#0f172a">Q, кДж</text>
+                                    <text x="135" y="115" font-size="10" font-weight="bold" fill="#0f172a">Δt, °C</text>
+                                    <line x1="25" y1="30" x2="170" y2="30" stroke="#f1f5f9"/>
+                                    <line x1="25" y1="50" x2="170" y2="50" stroke="#f1f5f9"/>
+                                    <line x1="25" y1="75" x2="170" y2="75" stroke="#f1f5f9"/>
+                                    <circle cx="55" cy="75" r="3.5" fill="#2563eb"/> <text x="62" y="77" font-size="10" font-weight="bold">1</text>
+                                    <circle cx="75" cy="50" r="3.5" fill="#2563eb"/> <text x="82" y="52" font-size="10" font-weight="bold">2</text>
+                                    <circle cx="55" cy="30" r="3.5" fill="#2563eb"/> <text x="62" y="32" font-size="10" font-weight="bold">3</text>
+                                    <circle cx="100" cy="30" r="3.5" fill="#2563eb"/> <text x="107" y="32" font-size="10" font-weight="bold">4</text>
+                                    <circle cx="100" cy="75" r="3.5" fill="#2563eb"/> <text x="107" y="77" font-size="10" font-weight="bold">5</text>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-5 gap-1 font-bold">
+                            <button onclick="checkMCQ(this, false, 't45', 'Ні. Тут малий Δt при ненайменшому Q.')" class="option-btn text-center p-1.5 rounded-xl border border-slate-300 bg-white">1</button>
+                            <button onclick="checkMCQ(this, false, 't45', 'Ні.')" class="option-btn text-center p-1.5 rounded-xl border border-slate-300 bg-white">2</button>
+                            <button onclick="checkMCQ(this, false, 't45', 'Ні. Точка 3 має найбільше Q при малому Δt (найбільша маса).')" class="option-btn text-center p-1.5 rounded-xl border border-slate-300 bg-white">3</button>
+                            <button onclick="checkMCQ(this, false, 't45', 'Ні.')" class="option-btn text-center p-1.5 rounded-xl border border-slate-300 bg-white">4</button>
+                            <button onclick="checkMCQ(this, true, 't45', 'Правильно! m = Q / (c · Δt). У точці 5 найменша кількість теплоти Q при найбільшій зміні температури Δt, тому маса m є мінімальною!')" class="option-btn text-center p-1.5 rounded-xl border border-slate-300 bg-white">5</button>
+                        </div>
+                        <div id="t45-feedback" class="hidden p-2 rounded-xl text-xs font-bold font-sans"></div>
+                    </div>
+
+                    <!-- Test 4.6 -->
+                    <div class="bg-slate-50 p-4 rounded-2xl border-2 border-slate-200 space-y-2 flex flex-col justify-between">
+                        <div>
+                            <p class="font-extrabold text-slate-900 text-xs md:text-sm">4.6. Графіки $t(Q)$ трьох тіл одинакової маси. Речовина якого тіла має найбільшу питому теплоємність?</p>
+                            <div class="flex justify-center my-1">
+                                <svg class="w-40 h-24 bg-white p-1 rounded-lg border border-slate-300" viewBox="0 0 180 120">
+                                    <line x1="25" y1="10" x2="25" y2="100" stroke="#0f172a" stroke-width="2"/>
+                                    <line x1="25" y1="100" x2="170" y2="100" stroke="#0f172a" stroke-width="2"/>
+                                    <text x="5" y="18" font-size="10" font-weight="bold" fill="#0f172a">t, °C</text>
+                                    <text x="130" y="115" font-size="10" font-weight="bold" fill="#0f172a">Q, кДж</text>
+                                    <text x="12" y="80" font-size="10" font-weight="bold" fill="#0f172a">t₀</text>
+                                    <line x1="25" y1="80" x2="100" y2="20" stroke="#dc2626" stroke-width="2"/> <text x="105" y="22" font-size="10" font-weight="bold">1</text>
+                                    <line x1="25" y1="80" x2="120" y2="40" stroke="#2563eb" stroke-width="2"/> <text x="125" y="42" font-size="10" font-weight="bold">3</text>
+                                    <line x1="25" y1="80" x2="120" y2="68" stroke="#16a34a" stroke-width="2"/> <text x="125" y="70" font-size="10" font-weight="bold">2</text>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-3 gap-1.5 font-bold">
+                            <button onclick="checkMCQ(this, false, 't46', 'Ні. Тіло 1 має найменшу теплоємність, бо його температура зростає найшвидше.')" class="option-btn text-center p-2 rounded-xl border border-slate-300 bg-white">Тіло 1</button>
+                            <button onclick="checkMCQ(this, true, 't46', 'Правильно! c = Q / (m · Δt). Тіло 2 нагрівається найповільніше (найменша зміна Δt при тому самому Q), отже воно має найбільшу питому теплоємність c!')" class="option-btn text-center p-2 rounded-xl border border-slate-300 bg-white">Тіло 2</button>
+                            <button onclick="checkMCQ(this, false, 't46', 'Ні. Питома теплоємність тіла 3 має проміжне значення.')" class="option-btn text-center p-2 rounded-xl border border-slate-300 bg-white">Тіло 3</button>
+                        </div>
+                        <div id="t46-feedback" class="hidden p-2 rounded-xl text-xs font-bold"></div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- Slide 3: Problems 5.1 to 5.4 -->
+        <section id="slide-3" class="slide-content hidden space-y-5">
+            <div class="physics-board rounded-3xl p-6 space-y-5">
+                <div class="flex items-center justify-between border-b-2 border-slate-100 pb-3">
+                    <h2 class="text-2xl font-black text-slate-900">4. Розв'язування задач (5.1 – 5.4)</h2>
+                    <span class="text-sm font-bold text-blue-800 bg-blue-100 px-4 py-1 rounded-full border border-blue-200">Поетапне відкриття кроків</span>
+                </div>
+
+                <!-- Problem Selector Tabs -->
+                <div class="flex flex-wrap gap-2">
+                    <button onclick="showProblem('prob-5-1', this)" class="prob-btn bg-blue-600 text-white font-extrabold px-5 py-2.5 rounded-xl text-base shadow-xs">Задача 5.1</button>
+                    <button onclick="showProblem('prob-5-2', this)" class="prob-btn bg-white hover:bg-slate-100 text-slate-800 border-2 border-slate-300 font-extrabold px-5 py-2.5 rounded-xl text-base">Задача 5.2</button>
+                    <button onclick="showProblem('prob-5-3', this)" class="prob-btn bg-white hover:bg-slate-100 text-slate-800 border-2 border-slate-300 font-extrabold px-5 py-2.5 rounded-xl text-base">Задача 5.3</button>
+                    <button onclick="showProblem('prob-5-4', this)" class="prob-btn bg-white hover:bg-slate-100 text-slate-800 border-2 border-slate-300 font-extrabold px-5 py-2.5 rounded-xl text-base">Задача 5.4</button>
+                </div>
+
+                <!-- PROBLEM 5.1 -->
+                <div id="prob-5-1" class="prob-container space-y-4">
+                    <div class="bg-amber-50 p-4 rounded-2xl border-2 border-amber-200">
+                        <p class="text-base text-amber-900 font-bold">Умова 5.1:</p>
+                        <p class="text-lg md:text-xl text-slate-900 font-semibold mt-1">
+                            Під час ремонту на ділянку дороги завдовжки $50\text{ м}$ та завширшки $8\text{ м}$ поклали асфальт завтовшки $5\text{ см}$. На скільки градусів знизиться температура асфальту, якщо під час його охолодження в навколишнє середовище виділилося $800\text{ МДж}$ теплоти? Густина асфальту дорівнює $1600\,\frac{\text{кг}}{\text{м}^3}$, а його питома теплоємність — $2000\,\frac{\text{Дж}}{\text{кг}\cdot^\circ\text{C}}$.
+                        </p>
+                    </div>
+
+                    <div class="grid md:grid-cols-3 gap-4 text-base">
+                        <div class="bg-slate-50 p-4 rounded-2xl border-2 border-slate-200 flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="font-extrabold text-blue-700 text-lg">1. Дано / СІ</span>
+                                    <button onclick="toggleStep('p51-s1')" class="text-xs bg-white hover:bg-slate-100 border border-slate-300 text-blue-700 px-3 py-1 rounded-lg font-bold">Відкрити</button>
+                                </div>
+                                <div id="p51-s1" class="hidden space-y-1 text-slate-800 font-mono text-sm border-t border-slate-200 pt-2">
+                                    <p>$a = 50\text{ м}$, $b = 8\text{ м}$</p>
+                                    <p>$h = 5\text{ см} = 0.05\text{ м}$</p>
+                                    <p>$Q = 800\text{ МДж} = 8 \cdot 10^8\text{ Дж}$</p>
+                                    <p>$\rho = 1600\,\frac{\text{кг}}{\text{м}^3}$, $c = 2000\,\frac{\text{Дж}}{\text{кг}\cdot^\circ\text{C}}$</p>
+                                    <p class="text-amber-800 font-bold mt-1"><strong>Знайти:</strong> $\Delta t - ?$</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-50 p-4 rounded-2xl border-2 border-slate-200 flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="font-extrabold text-indigo-700 text-lg">2. Формули</span>
+                                    <button onclick="toggleStep('p51-s2')" class="text-xs bg-white hover:bg-slate-100 border border-slate-300 text-indigo-700 px-3 py-1 rounded-lg font-bold">Відкрити</button>
+                                </div>
+                                <div id="p51-s2" class="hidden space-y-2 text-slate-800 font-mono text-sm border-t border-slate-200 pt-2">
+                                    <p>$V = a \cdot b \cdot h$</p>
+                                    <p>$m = \rho \cdot V$</p>
+                                    <p>$Q = c \cdot m \cdot \Delta t \implies \Delta t = \frac{Q}{c \cdot m}$</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-50 p-4 rounded-2xl border-2 border-slate-200 flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="font-extrabold text-emerald-700 text-lg">3. Обчислення & Відповідь</span>
+                                    <button onclick="toggleStep('p51-s3')" class="text-xs bg-white hover:bg-slate-100 border border-slate-300 text-emerald-700 px-3 py-1 rounded-lg font-bold">Відкрити</button>
+                                </div>
+                                <div id="p51-s3" class="hidden space-y-2 text-slate-800 font-mono text-sm border-t border-slate-200 pt-2">
+                                    <p>$V = 50 \cdot 8 \cdot 0.05 = 20\text{ м}^3$</p>
+                                    <p>$m = 1600 \cdot 20 = 32\,000\text{ кг}$</p>
+                                    <p>$\Delta t = \frac{8 \cdot 10^8}{2000 \cdot 32000} = \frac{8000}{640} = 12.5^\circ\text{C}$</p>
+                                    <p class="font-bold text-emerald-900 border-t border-emerald-300 pt-1 mt-2">Відповідь: $\Delta t = 12.5^\circ\text{C}$</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PROBLEM 5.2 -->
+                <div id="prob-5-2" class="prob-container hidden space-y-4">
+                    <div class="bg-amber-50 p-4 rounded-2xl border-2 border-amber-200">
+                        <p class="text-base text-amber-900 font-bold">Умова 5.2:</p>
+                        <p class="text-lg md:text-xl text-slate-900 font-semibold mt-1">
+                            У воду масою $800\text{ г}$, температура якої становить $20^\circ\text{C}$, занурили мідне тіло масою $0.9\text{ кг}$. Після встановлення теплової рівноваги температура в посудині дорівнювала $22^\circ\text{C}$. Визнач початкову температуру тіла. Теплообміном із навколишнім середовищем і теплоємністю посудини, у якій міститься вода, знехтуй.
+                        </p>
+                    </div>
+
+                    <div class="grid md:grid-cols-3 gap-4 text-base">
+                        <div class="bg-slate-50 p-4 rounded-2xl border-2 border-slate-200 flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="font-extrabold text-blue-700 text-lg">1. Дано / СІ</span>
+                                    <button onclick="toggleStep('p52-s1')" class="text-xs bg-white hover:bg-slate-100 border border-slate-300 text-blue-700 px-3 py-1 rounded-lg font-bold">Відкрити</button>
+                                </div>
+                                <div id="p52-s1" class="hidden space-y-1 text-slate-800 font-mono text-sm border-t border-slate-200 pt-2">
+                                    <p>$m_{\text{в}} = 800\text{ г} = 0.8\text{ кг}$, $t_{\text{в}} = 20^\circ\text{C}$</p>
+                                    <p>$m_{\text{м}} = 0.9\text{ кг}$, $t_{\text{суміш}} = 22^\circ\text{C}$</p>
+                                    <p>$c_{\text{в}} = 4200\,\frac{\text{Дж}}{\text{кг}\cdot^\circ\text{C}}$, $c_{\text{м}} = 400\,\frac{\text{Дж}}{\text{кг}\cdot^\circ\text{C}}$</p>
+                                    <p class="text-amber-800 font-bold mt-1"><strong>Знайти:</strong> $t_{\text{м}} - ?$</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-50 p-4 rounded-2xl border-2 border-slate-200 flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="font-extrabold text-indigo-700 text-lg">2. Формули</span>
+                                    <button onclick="toggleStep('p52-s2')" class="text-xs bg-white hover:bg-slate-100 border border-slate-300 text-indigo-700 px-3 py-1 rounded-lg font-bold">Відкрити</button>
+                                </div>
+                                <div id="p52-s2" class="hidden space-y-2 text-slate-800 font-mono text-sm border-t border-slate-200 pt-2">
+                                    <p>$Q_{\text{відд}} = Q_{\text{отр}}$</p>
+                                    <p>$c_{\text{м}} m_{\text{м}} (t_{\text{м}} - t_{\text{суміш}}) = c_{\text{в}} m_{\text{в}} (t_{\text{суміш}} - t_{\text{в}})$</p>
+                                    <p>$t_{\text{м}} = t_{\text{суміш}} + \frac{c_{\text{в}} m_{\text{в}} (t_{\text{суміш}} - t_{\text{в}})}{c_{\text{м}} m_{\text{м}}}$</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-50 p-4 rounded-2xl border-2 border-slate-200 flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="font-extrabold text-emerald-700 text-lg">3. Обчислення & Відповідь</span>
+                                    <button onclick="toggleStep('p52-s3')" class="text-xs bg-white hover:bg-slate-100 border border-slate-300 text-emerald-700 px-3 py-1 rounded-lg font-bold">Відкрити</button>
+                                </div>
+                                <div id="p52-s3" class="hidden space-y-2 text-slate-800 font-mono text-sm border-t border-slate-200 pt-2">
+                                    <p>$Q_{\text{отр}} = 4200 \cdot 0.8 \cdot 2 = 6720\text{ Дж}$</p>
+                                    <p>$t_{\text{м}} - 22 = \frac{6720}{400 \cdot 0.9} = \frac{6720}{360} \approx 18.67^\circ\text{C}$</p>
+                                    <p>$t_{\text{м}} \approx 22 + 18.67 = 40.67^\circ\text{C}$</p>
+                                    <p class="font-bold text-emerald-900 border-t border-emerald-300 pt-1 mt-2">Відповідь: $t_{\text{м}} \approx 40.67^\circ\text{C}$</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PROBLEM 5.3 -->
+                <div id="prob-5-3" class="prob-container hidden space-y-4">
+                    <div class="bg-amber-50 p-4 rounded-2xl border-2 border-amber-200">
+                        <p class="text-base text-amber-900 font-bold">Умова 5.3:</p>
+                        <p class="text-lg md:text-xl text-slate-900 font-semibold mt-1">
+                            У мідній посудині масою $600\text{ г}$ міститься вода за температури $15^\circ\text{C}$. У неї доливають $0.4\text{ кг}$ води, температура якої становить $75^\circ\text{C}$. Після завершення теплообміну температура в посудині дорівнює $55^\circ\text{C}$. Визнач масу води, що містилася спочатку в посудині. Теплообміном із навколишнім середовищем знехтуй.
+                        </p>
+                    </div>
+
+                    <div class="grid md:grid-cols-3 gap-4 text-base">
+                        <div class="bg-slate-50 p-4 rounded-2xl border-2 border-slate-200 flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="font-extrabold text-blue-700 text-lg">1. Дано / СІ</span>
+                                    <button onclick="toggleStep('p53-s1')" class="text-xs bg-white hover:bg-slate-100 border border-slate-300 text-blue-700 px-3 py-1 rounded-lg font-bold">Відкрити</button>
+                                </div>
+                                <div id="p53-s1" class="hidden space-y-1 text-slate-800 font-mono text-sm border-t border-slate-200 pt-2">
+                                    <p>$m_{\text{пос}} = 600\text{ г} = 0.6\text{ кг}$, $c_{\text{м}} = 400$</p>
+                                    <p>$t_1 = 15^\circ\text{C}$, $m_2 = 0.4\text{ кг}$, $t_2 = 75^\circ\text{C}$</p>
+                                    <p>$t_{\text{суміш}} = 55^\circ\text{C}$, $c_{\text{в}} = 4200\,\frac{\text{Дж}}{\text{кг}\cdot^\circ\text{C}}$</p>
+                                    <p class="text-amber-800 font-bold mt-1"><strong>Знайти:</strong> $m_1 - ?$</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-50 p-4 rounded-2xl border-2 border-slate-200 flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="font-extrabold text-indigo-700 text-lg">2. Формули</span>
+                                    <button onclick="toggleStep('p53-s2')" class="text-xs bg-white hover:bg-slate-100 border border-slate-300 text-indigo-700 px-3 py-1 rounded-lg font-bold">Відкрити</button>
+                                </div>
+                                <div id="p53-s2" class="hidden space-y-2 text-slate-800 font-mono text-sm border-t border-slate-200 pt-2">
+                                    <p>$Q_{\text{відд}} = Q_2 = c_{\text{в}} m_2 (t_2 - t_{\text{суміш}})$</p>
+                                    <p>$Q_{\text{отр}} = (c_{\text{в}} m_1 + c_{\text{м}} m_{\text{пос}})(t_{\text{суміш}} - t_1)$</p>
+                                    <p>$Q_{\text{відд}} = Q_{\text{отр}}$</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-50 p-4 rounded-2xl border-2 border-slate-200 flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="font-extrabold text-emerald-700 text-lg">3. Обчислення & Відповідь</span>
+                                    <button onclick="toggleStep('p53-s3')" class="text-xs bg-white hover:bg-slate-100 border border-slate-300 text-emerald-700 px-3 py-1 rounded-lg font-bold">Відкрити</button>
+                                </div>
+                                <div id="p53-s3" class="hidden space-y-2 text-slate-800 font-mono text-sm border-t border-slate-200 pt-2">
+                                    <p>$Q_2 = 4200 \cdot 0.4 \cdot 20 = 33\,600\text{ Дж}$</p>
+                                    <p>$(4200 m_1 + 400 \cdot 0.6) \cdot 40 = 33\,600$</p>
+                                    <p>$4200 m_1 + 240 = 840 \implies 4200 m_1 = 600$</p>
+                                    <p>$m_1 = \frac{600}{4200} \approx 0.143\text{ кг}$</p>
+                                    <p class="font-bold text-emerald-900 border-t border-emerald-300 pt-1 mt-2">Відповідь: $m_1 \approx 0.143\text{ кг} = 143\text{ г}$</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PROBLEM 5.4 -->
+                <div id="prob-5-4" class="prob-container hidden space-y-4">
+                    <div class="bg-amber-50 p-4 rounded-2xl border-2 border-amber-200">
+                        <p class="text-base text-amber-900 font-bold">Умова 5.4:</p>
+                        <p class="text-lg md:text-xl text-slate-900 font-semibold mt-1">
+                            Алюмінієвий куб за температури $420^\circ\text{C}$привели в дотик зі свинцевим кубом, довжина ребра якого вдвічі більша, ніж в алюмінієвого, а температура дорівнює $20^\circ\text{C}$. Визнач температуру теплової рівноваги. Втратами теплоти в навколишнє середовище знехтуй.
+                        </p>
+                    </div>
+
+                    <div class="grid md:grid-cols-3 gap-4 text-base">
+                        <div class="bg-slate-50 p-4 rounded-2xl border-2 border-slate-200 flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="font-extrabold text-blue-700 text-lg">1. Дано / Співвідношення</span>
+                                    <button onclick="toggleStep('p54-s1')" class="text-xs bg-white hover:bg-slate-100 border border-slate-300 text-blue-700 px-3 py-1 rounded-lg font-bold">Відкрити</button>
+                                </div>
+                                <div id="p54-s1" class="hidden space-y-1 text-slate-800 font-mono text-sm border-t border-slate-200 pt-2">
+                                    <p>$a_{\text{св}} = 2 a_{\text{ал}} \implies V_{\text{св}} = 8 V_{\text{ал}}$</p>
+                                    <p>$\rho_{\text{ал}} = 2700$, $\rho_{\text{св}} = 11300\,\frac{\text{кг}}{\text{м}^3}$</p>
+                                    <p>$c_{\text{ал}} = 920$, $c_{\text{св}} = 130\,\frac{\text{Дж}}{\text{кг}\cdot^\circ\text{C}}$</p>
+                                    <p>$t_{\text{ал}} = 420^\circ\text{C}$, $t_{\text{св}} = 20^\circ\text{C}$</p>
+                                    <p class="text-amber-800 font-bold mt-1"><strong>Знайти:</strong> $t_{\text{суміш}} - ?$</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-50 p-4 rounded-2xl border-2 border-slate-200 flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="font-extrabold text-indigo-700 text-lg">2. Формули</span>
+                                    <button onclick="toggleStep('p54-s2')" class="text-xs bg-white hover:bg-slate-100 border border-slate-300 text-indigo-700 px-3 py-1 rounded-lg font-bold">Відкрити</button>
+                                </div>
+                                <div id="p54-s2" class="hidden space-y-2 text-slate-800 font-mono text-sm border-t border-slate-200 pt-2">
+                                    <p>$m_{\text{ал}} = \rho_{\text{ал}} V_{\text{ал}}$</p>
+                                    <p>$m_{\text{св}} = \rho_{\text{св}} (8 V_{\text{ал}}) = 8 \rho_{\text{св}} V_{\text{ал}}$</p>
+                                    <p>$c_{\text{ал}} m_{\text{ал}} (420 - t_{\text{суміш}}) = c_{\text{св}} m_{\text{св}} (t_{\text{суміш}} - 20)$</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-50 p-4 rounded-2xl border-2 border-slate-200 flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="font-extrabold text-emerald-700 text-lg">3. Обчислення & Відповідь</span>
+                                    <button onclick="toggleStep('p54-s3')" class="text-xs bg-white hover:bg-slate-100 border border-slate-300 text-emerald-700 px-3 py-1 rounded-lg font-bold">Відкрити</button>
+                                </div>
+                                <div id="p54-s3" class="hidden space-y-2 text-slate-800 font-mono text-sm border-t border-slate-200 pt-2">
+                                    <p>$c_{\text{ал}} \rho_{\text{ал}} = 920 \cdot 2700 = 2.484 \cdot 10^6$</p>
+                                    <p>$8 c_{\text{св}} \rho_{\text{св}} = 8 \cdot 130 \cdot 11300 = 11.752 \cdot 10^6$</p>
+                                    <p>$2.484 (420 - t_{\text{суміш}}) = 11.752 (t_{\text{суміш}} - 20)$</p>
+                                    <p class="font-bold text-emerald-900 border-t border-emerald-300 pt-1 mt-2">Відповідь: $t_{\text{суміш}} \approx 89.8^\circ\text{C}$</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Slide 4: Problems 5.5 to 5.7* -->
+        <section id="slide-4" class="slide-content hidden space-y-5">
+            <div class="physics-board rounded-3xl p-6 space-y-5">
+                <div class="flex items-center justify-between border-b-2 border-slate-100 pb-3">
+                    <h2 class="text-2xl font-black text-slate-900">5. Розв'язування задач (5.5 – 5.7*)</h2>
+                    <span class="text-sm font-bold text-purple-800 bg-purple-100 px-4 py-1 rounded-full border border-purple-200">Перетворення енергії, ККД та молекулярний аналіз</span>
+                </div>
+
+                <div class="flex flex-wrap gap-2">
+                    <button onclick="showProblem2('prob-5-5', this)" class="prob-btn-2 bg-blue-600 text-white font-extrabold px-5 py-2.5 rounded-xl text-base shadow-xs">Задача 5.5</button>
+                    <button onclick="showProblem2('prob-5-6', this)" class="prob-btn-2 bg-white hover:bg-slate-100 text-slate-800 border-2 border-slate-300 font-extrabold px-5 py-2.5 rounded-xl text-base">Задача 5.6*</button>
+                    <button onclick="showProblem2('prob-5-7', this)" class="prob-btn-2 bg-white hover:bg-slate-100 text-slate-800 border-2 border-slate-300 font-extrabold px-5 py-2.5 rounded-xl text-base">Задача 5.7*</button>
+                </div>
+
+                <!-- PROBLEM 5.5 -->
+                <div id="prob-5-5" class="prob-container-2 space-y-4">
+                    <div class="bg-amber-50 p-4 rounded-2xl border-2 border-amber-200">
+                        <p class="text-base text-amber-900 font-bold">Умова 5.5:</p>
+                        <p class="text-lg md:text-xl text-slate-900 font-semibold mt-1">
+                            За допомогою кип'ятильника з потужністю $600\text{ Вт}$ та ККД $70\%$ нагрівають $3\text{ л}$ води від $20$ до $100^\circ\text{C}$. За який час відбудеться нагрівання води?
+                        </p>
+                    </div>
+
+                    <div class="grid md:grid-cols-3 gap-4 text-base">
+                        <div class="bg-slate-50 p-4 rounded-2xl border-2 border-slate-200 flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="font-extrabold text-blue-700 text-lg">1. Дано / СІ</span>
+                                    <button onclick="toggleStep('p55-s1')" class="text-xs bg-white hover:bg-slate-100 border border-slate-300 text-blue-700 px-3 py-1 rounded-lg font-bold">Відкрити</button>
+                                </div>
+                                <div id="p55-s1" class="hidden space-y-1 text-slate-800 font-mono text-sm border-t border-slate-200 pt-2">
+                                    <p>$P = 600\text{ Вт}$, $\eta = 70\% = 0.7$</p>
+                                    <p>$V = 3\text{ л} \implies m = 3\text{ кг}$</p>
+                                    <p>$t_1 = 20^\circ\text{C}$, $t_2 = 100^\circ\text{C}$</p>
+                                    <p>$c = 4200\,\frac{\text{Дж}}{\text{кг}\cdot^\circ\text{C}}$</p>
+                                    <p class="text-amber-800 font-bold mt-1"><strong>Знайти:</strong> $\tau - ?$</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-50 p-4 rounded-2xl border-2 border-slate-200 flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="font-extrabold text-indigo-700 text-lg">2. Формули</span>
+                                    <button onclick="toggleStep('p55-s2')" class="text-xs bg-white hover:bg-slate-100 border border-slate-300 text-indigo-700 px-3 py-1 rounded-lg font-bold">Відкрити</button>
+                                </div>
+                                <div id="p55-s2" class="hidden space-y-2 text-slate-800 font-mono text-sm border-t border-slate-200 pt-2">
+                                    <p>$Q_{\text{корисне}} = c \cdot m \cdot (t_2 - t_1)$</p>
+                                    <p>$A_{\text{повна}} = P \cdot \tau$</p>
+                                    <p>$\eta = \frac{Q_{\text{корисне}}}{A_{\text{повна}}} \implies \tau = \frac{c \cdot m \cdot \Delta t}{\eta \cdot P}$</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-50 p-4 rounded-2xl border-2 border-slate-200 flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="font-extrabold text-emerald-700 text-lg">3. Обчислення & Відповідь</span>
+                                    <button onclick="toggleStep('p55-s3')" class="text-xs bg-white hover:bg-slate-100 border border-slate-300 text-emerald-700 px-3 py-1 rounded-lg font-bold">Відкрити</button>
+                                </div>
+                                <div id="p55-s3" class="hidden space-y-2 text-slate-800 font-mono text-sm border-t border-slate-200 pt-2">
+                                    <p>$Q_{\text{корисне}} = 4200 \cdot 3 \cdot 80 = 1\,008\,000\text{ Дж}$</p>
+                                    <p>$\tau = \frac{1\,008\,000}{0.7 \cdot 600} = \frac{1\,008\,000}{420} = 2400\text{ с}$</p>
+                                    <p class="font-bold text-emerald-900 border-t border-emerald-300 pt-1 mt-2">Відповідь: $\tau = 2400\text{ с} = 40\text{ хв}$</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PROBLEM 5.6* -->
+                <div id="prob-5-6" class="prob-container-2 hidden space-y-4">
+                    <div class="bg-amber-50 p-4 rounded-2xl border-2 border-amber-200">
+                        <p class="text-base text-amber-900 font-bold">Умова 5.6*:</p>
+                        <p class="text-lg md:text-xl text-slate-900 font-semibold mt-1">
+                            Температура води підвищилася на $10^\circ\text{C}$. Оціни, на скільки збільшилася енергія кожної молекули води.
+                        </p>
+                    </div>
+
+                    <div class="grid md:grid-cols-3 gap-4 text-base">
+                        <div class="bg-slate-50 p-4 rounded-2xl border-2 border-slate-200 flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="font-extrabold text-blue-700 text-lg">1. Дано & Константи</span>
+                                    <button onclick="toggleStep('p56-s1')" class="text-xs bg-white hover:bg-slate-100 border border-slate-300 text-blue-700 px-3 py-1 rounded-lg font-bold">Відкрити</button>
+                                </div>
+                                <div id="p56-s1" class="hidden space-y-1 text-slate-800 font-mono text-sm border-t border-slate-200 pt-2">
+                                    <p>$\Delta t = 10^\circ\text{C}$</p>
+                                    <p>$c = 4200\,\frac{\text{Дж}}{\text{кг}\cdot^\circ\text{C}}$</p>
+                                    <p>$M_{\text{води}} = 0.018\,\frac{\text{кг}}{\text{моль}}$</p>
+                                    <p>$N_A = 6.02 \cdot 10^{23}\,\text{моль}^{-1}$</p>
+                                    <p class="text-amber-800 font-bold mt-1"><strong>Знайти:</strong> $\Delta E_1 - ?$</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-50 p-4 rounded-2xl border-2 border-slate-200 flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="font-extrabold text-indigo-700 text-lg">2. Формули</span>
+                                    <button onclick="toggleStep('p56-s2')" class="text-xs bg-white hover:bg-slate-100 border border-slate-300 text-indigo-700 px-3 py-1 rounded-lg font-bold">Відкрити</button>
+                                </div>
+                                <div id="p56-s2" class="hidden space-y-2 text-slate-800 font-mono text-sm border-t border-slate-200 pt-2">
+                                    <p>$Q = c \cdot m \cdot \Delta t$</p>
+                                    <p>$N = \frac{m}{M} \cdot N_A$</p>
+                                    <p>$\Delta E_1 = \frac{Q}{N} = \frac{c \cdot M \cdot \Delta t}{N_A}$</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-50 p-4 rounded-2xl border-2 border-slate-200 flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="font-extrabold text-emerald-700 text-lg">3. Обчислення & Відповідь</span>
+                                    <button onclick="toggleStep('p56-s3')" class="text-xs bg-white hover:bg-slate-100 border border-slate-300 text-emerald-700 px-3 py-1 rounded-lg font-bold">Відкрити</button>
+                                </div>
+                                <div id="p56-s3" class="hidden space-y-2 text-slate-800 font-mono text-sm border-t border-slate-200 pt-2">
+                                    <p>$\Delta E_1 = \frac{4200 \cdot 0.018 \cdot 10}{6.02 \cdot 10^{23}}$</p>
+                                    <p>$\Delta E_1 = \frac{756}{6.02 \cdot 10^{23}} \approx 1.256 \cdot 10^{-21}\text{ Дж}$</p>
+                                    <p class="font-bold text-emerald-900 border-t border-emerald-300 pt-1 mt-2">Відповідь: $\Delta E_1 \approx 1.26 \cdot 10^{-21}\text{ Дж}$</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PROBLEM 5.7* -->
+                <div id="prob-5-7" class="prob-container-2 hidden space-y-4">
+                    <div class="bg-amber-50 p-4 rounded-2xl border-2 border-amber-200">
+                        <p class="text-base text-amber-900 font-bold">Умова 5.7*:</p>
+                        <p class="text-lg md:text-xl text-slate-900 font-semibold mt-1">
+                            Проточний водонагрівач потужністю $4\text{ кВт}$ у сталому режимі нагріває воду на $15^\circ\text{C}$. Діаметр його труби дорівнює $1\text{ см}$. Визнач швидкість течії води. Втратами енергії знехтуй.
+                        </p>
+                    </div>
+
+                    <div class="grid md:grid-cols-3 gap-4 text-base">
+                        <div class="bg-slate-50 p-4 rounded-2xl border-2 border-slate-200 flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="font-extrabold text-blue-700 text-lg">1. Дано / СІ</span>
+                                    <button onclick="toggleStep('p57-s1')" class="text-xs bg-white hover:bg-slate-100 border border-slate-300 text-blue-700 px-3 py-1 rounded-lg font-bold">Відкрити</button>
+                                </div>
+                                <div id="p57-s1" class="hidden space-y-1 text-slate-800 font-mono text-sm border-t border-slate-200 pt-2">
+                                    <p>$P = 4\text{ кВт} = 4000\text{ Вт}$</p>
+                                    <p>$\Delta t = 15^\circ\text{C}$, $d = 1\text{ см} = 0.01\text{ м}$</p>
+                                    <p>$\rho = 1000\,\frac{\text{кг}}{\text{м}^3}$, $c = 4200\,\frac{\text{Дж}}{\text{кг}\cdot^\circ\text{C}}$</p>
+                                    <p class="text-amber-800 font-bold mt-1"><strong>Знайти:</strong> $v - ?$</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-50 p-4 rounded-2xl border-2 border-slate-200 flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="font-extrabold text-indigo-700 text-lg">2. Формули</span>
+                                    <button onclick="toggleStep('p57-s2')" class="text-xs bg-white hover:bg-slate-100 border border-slate-300 text-indigo-700 px-3 py-1 rounded-lg font-bold">Відкрити</button>
+                                </div>
+                                <div id="p57-s2" class="hidden space-y-2 text-slate-800 font-mono text-sm border-t border-slate-200 pt-2">
+                                    <p>$P \cdot \Delta \tau = c \cdot \Delta m \cdot \Delta t$</p>
+                                    <p>$\Delta m = \rho \cdot S \cdot v \cdot \Delta \tau$</p>
+                                    <p>$S = \frac{\pi d^2}{4} \implies P = c \cdot \rho \cdot \frac{\pi d^2}{4} \cdot v \cdot \Delta t$</p>
+                                    <p>$v = \frac{4 P}{\pi d^2 \rho c \Delta t}$</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-50 p-4 rounded-2xl border-2 border-slate-200 flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="font-extrabold text-emerald-700 text-lg">3. Обчислення & Відповідь</span>
+                                    <button onclick="toggleStep('p57-s3')" class="text-xs bg-white hover:bg-slate-100 border border-slate-300 text-emerald-700 px-3 py-1 rounded-lg font-bold">Відкрити</button>
+                                </div>
+                                <div id="p57-s3" class="hidden space-y-2 text-slate-800 font-mono text-sm border-t border-slate-200 pt-2">
+                                    <p>$v = \frac{4 \cdot 4000}{3.1416 \cdot (0.01)^2 \cdot 1000 \cdot 4200 \cdot 15}$</p>
+                                    <p>$v = \frac{16000}{19792} \approx 0.808\text{ м/с}$</p>
+                                    <p class="font-bold text-emerald-900 border-t border-emerald-300 pt-1 mt-2">Відповідь: $v \approx 0.81\text{ м/с}$ ($81\text{ см/с}$)</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-white border-t-2 border-slate-200 px-6 py-3 flex items-center justify-between shrink-0 shadow-xs z-10">
+        <button onclick="prevSlide()" id="btn-prev" class="btn-action bg-slate-100 hover:bg-slate-200 text-slate-800 font-extrabold px-6 py-3 rounded-xl border border-slate-300 flex items-center gap-2 shadow-xs text-base">
+            <i class="fa-solid fa-chevron-left"></i> Назад
+        </button>
+
+        <div class="flex items-center gap-2">
+            <span class="text-xs text-slate-500 font-bold hidden md:inline">Управління клавішами: ← Стрілка вліво / Вправо Стрілка →</span>
+        </div>
+
+        <button onclick="nextSlide()" id="btn-next" class="btn-action bg-blue-600 hover:bg-blue-700 text-white font-extrabold px-6 py-3 rounded-xl shadow-md flex items-center gap-2 text-base">
+            Далі <i class="fa-solid fa-chevron-right"></i>
+        </button>
+    </footer>
+
+    <script>
+        let currentSlide = 0;
+        const totalSlides = 5;
+
+        function triggerMathTypeset() {
+            if (window.MathJax && window.MathJax.typesetPromise) {
+                window.MathJax.typesetPromise();
+            }
+        }
+
+        function goToSlide(index) {
+            if (index < 0 || index >= totalSlides) return;
+            
+            document.querySelectorAll('.slide-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`slide-${index}`).classList.remove('hidden');
+            currentSlide = index;
+
+            for (let i = 0; i < totalSlides; i++) {
+                const tab = document.getElementById(`tab-${i}`);
+                if (tab) {
+                    if (i === index) {
+                        tab.className = 'px-4 py-2 rounded-lg transition-all text-blue-700 bg-white shadow-xs font-black';
+                    } else {
+                        tab.className = 'px-4 py-2 rounded-lg transition-all text-slate-600 hover:text-slate-900 font-bold';
+                    }
+                }
+            }
+
+            document.getElementById('slide-indicator').innerText = `${currentSlide + 1} / ${totalSlides}`;
+
+            document.getElementById('btn-prev').disabled = (currentSlide === 0);
+            document.getElementById('btn-prev').style.opacity = (currentSlide === 0) ? "0.4" : "1";
+            
+            if (currentSlide === totalSlides - 1) {
+                document.getElementById('btn-next').innerHTML = 'Завершити <i class="fa-solid fa-check ml-1"></i>';
+                document.getElementById('btn-next').className = 'btn-action bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold px-6 py-3 rounded-xl shadow-md flex items-center gap-2 text-base';
+            } else {
+                document.getElementById('btn-next').innerHTML = 'Далі <i class="fa-solid fa-chevron-right"></i>';
+                document.getElementById('btn-next').className = 'btn-action bg-blue-600 hover:bg-blue-700 text-white font-extrabold px-6 py-3 rounded-xl shadow-md flex items-center gap-2 text-base';
+            }
+
+            triggerMathTypeset();
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides - 1) {
+                goToSlide(currentSlide + 1);
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 0) {
+                goToSlide(currentSlide - 1);
+            }
+        }
+
+        function toggleAnswer(id) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.classList.toggle('hidden');
+                if (!el.classList.contains('hidden')) {
+                    triggerMathTypeset();
+                }
+            }
+        }
+
+        function toggleStep(id) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.classList.toggle('hidden');
+                if (!el.classList.contains('hidden')) {
+                    triggerMathTypeset();
+                }
+            }
+        }
+
+        function checkMCQ(btn, isCorrect, feedbackId, text) {
+            const feedbackEl = document.getElementById(feedbackId + '-feedback');
+            const parent = btn.parentElement;
+            
+            // Reset parent buttons
+            const buttons = parent.querySelectorAll('button');
+            buttons.forEach(b => {
+                b.classList.remove('bg-emerald-100', 'border-emerald-500', 'bg-rose-100', 'border-rose-500', 'text-emerald-950', 'text-rose-950');
+            });
+
+            if (isCorrect) {
+                btn.classList.add('bg-emerald-100', 'border-emerald-500', 'text-emerald-950');
+                feedbackEl.className = 'p-2.5 rounded-xl text-xs font-bold mt-1 bg-emerald-100 border border-emerald-300 text-emerald-950';
+                feedbackEl.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-600 mr-1.5"></i> ${text}`;
+            } else {
+                btn.classList.add('bg-rose-100', 'border-rose-500', 'text-rose-950');
+                feedbackEl.className = 'p-2.5 rounded-xl text-xs font-bold mt-1 bg-rose-100 border border-rose-300 text-rose-950';
+                feedbackEl.innerHTML = `<i class="fa-solid fa-circle-xmark text-rose-600 mr-1.5"></i> ${text}`;
+            }
+            feedbackEl.classList.remove('hidden');
+            triggerMathTypeset();
+        }
+
+        function showProblem(probId, btnEl) {
+            document.querySelectorAll('.prob-container').forEach(el => el.classList.add('hidden'));
+            document.getElementById(probId).classList.remove('hidden');
+
+            document.querySelectorAll('.prob-btn').forEach(btn => {
+                btn.className = 'prob-btn bg-white hover:bg-slate-100 text-slate-800 border-2 border-slate-300 font-extrabold px-5 py-2.5 rounded-xl text-base';
+            });
+            if (btnEl) {
+                btnEl.className = 'prob-btn bg-blue-600 text-white font-extrabold px-5 py-2.5 rounded-xl text-base shadow-xs';
+            }
+            triggerMathTypeset();
+        }
+
+        function showProblem2(probId, btnEl) {
+            document.querySelectorAll('.prob-container-2').forEach(el => el.classList.add('hidden'));
+            document.getElementById(probId).classList.remove('hidden');
+
+            document.querySelectorAll('.prob-btn-2').forEach(btn => {
+                btn.className = 'prob-btn-2 bg-white hover:bg-slate-100 text-slate-800 border-2 border-slate-300 font-extrabold px-5 py-2.5 rounded-xl text-base';
+            });
+            if (btnEl) {
+                btnEl.className = 'prob-btn-2 bg-blue-600 text-white font-extrabold px-5 py-2.5 rounded-xl text-base shadow-xs';
+            }
+            triggerMathTypeset();
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowRight') {
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                prevSlide();
+            }
+        });
+
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.log(`Error attempting to enable fullscreen: ${err.message}`);
+                });
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        }
+
+        window.onload = function() {
+            goToSlide(0);
+        }
+    </script>
+</body>
+</html>
